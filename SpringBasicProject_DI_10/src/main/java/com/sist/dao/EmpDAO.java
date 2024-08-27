@@ -13,6 +13,6 @@ public class EmpDAO {
 	@Autowired
 	private EmpMapper mapper;
 	public List<EmpVO> empListData(){
-		return mapper.empListData();
+		return mapper.empListData(); 
 	}
 }
