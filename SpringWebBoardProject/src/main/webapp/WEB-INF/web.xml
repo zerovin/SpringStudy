@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+	
+	<!-- Controller 등록
+		dispatcherServlet : Controller
+		                    Front Controller : 요청을 받는 역할
+		사용자 정의 => ~Controller(Model) : 요청에 대한 처리 역할
+		화면 : JSP / HTML( => ThymeLeaf, React, NextJS)
+		
+		1.Servlet은 구동 => 동작(tomcat에 의해 동작) web.xml, server.xml
+		  분석 web.xml => server.xml => Model => Mapper => DAO => JSP
+		  web.xml : servlet 등록 
+		            DispatcherServlet : Spring
+		            FilterDispatcher : 스트럿츠
+	 -->
+	 
+	 <!-- 
+	               ~.do
+	 	사용자 요청 ======== DispatcherServelt ======== HandlerMapping
+	 	                                        1. Model에서 @RequestMapping : GET + POST 동시에 처리
+	 	                                                  @GetMapping : GET => SELECT
+	 	                                                  @PostMapping : POST => INSERT
+	 	                                                  @PutMapping : UPDATE
+	 	                                                  @DeleteMapping : DELETE
+	 	                                        2. 개발자 요청 처리
+	 	                                           return "main/main" => .jsp는 이미 등록, 확장자없이 파일명만 기재
+	 	                                                                 forward : request를 전송
+	 	                                           return "redirect:list.do"
+	 	                                                   => sendRedirect : request를 초기화
+	 	                                                                     보내는 데이터없이 이미 구현된 화면으로 이동
+	 	                                                                     _ok.do, before.do(cookie_
+	 	                                        3. ViewResolver : JSP를 찾아서 Request를 전송하는 역할
+	 	                                        4. View => JSP
+	 	                                        ==> 요청처리 : Model
+	 	                                                     Model, VO, DAO, Service, Manager
+	 	                                                     => 재사용, 유지보수를 위해서 분리
+	 	                                            화면출력 : JSP
+	 	                                            
+	 	                                        JSP에서 처리+출력 - Model1 => 간단, 파일하나
+	 	                                                                   재사용 불가
+	 	                                                                   한 파일이라 한사람이 작업
+	 	                                                                   보안에 취약
+	 	                                        MVC로 나눠 처리 출력 - Model2 => 복잡, 파일여러개
+	 	                                                                     재사용 가능
+	 	                                                                     MVC가 각각 분산되어 나눠서 작업가능
+	 	                                                                     보안이 뛰어남
+	  -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<!-- 
+		XML로 환경설정이 된 경우 사용 => Spring 4
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/application-*.xml</param-value>  xml 파일 경로지정
+		</init-param>
+		-->
+			<!-- 
+				public class dispatcherServlet extends HttpServlet{
+					public void init(ServletConfig config){
+						1. web.xml에 등록된 데이터 읽기
+						   String xml=config.getInitParameter("contextConfigLocation");
+						   ApplicationContext app=new ClassPathApplicationContext(xml);
+						   => 등록된 클래스를 메모리 할당
+					}
+					public void service(HttpServletReqeust request, HttpServletResponse response){
+						사용자 요청을 받아서 처리된 결과를 JSP로 전송
+					}
+					public void destroy(){
+						servlet 메모리 해제 ex)새로고침, 화면변경
+					}
+				}
+			-->
+		
+		<!-- Spring 5 : 자바로 환경설정 -->
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>
+				org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>com.sist.config.MvcConfig</param-value>
+		</init-param>
+	</servlet>
+		
+	 <servlet-mapping>
+	     <servlet-name>dispatcher</servlet-name>
+	     <url-pattern>*.do</url-pattern>
+	 </servlet-mapping>
+
+	<!-- 한글 변환 -->
+	<filter>
+	     <filter-name>encodingFilter</filter-name>
+	     <filter-class>
+	         org.springframework.web.filter.CharacterEncodingFilter
+	     </filter-class>
+	     <init-param>
+	         <param-name>encoding</param-name>
+	         <param-value>UTF-8</param-value>
+	     </init-param>
+	     <init-param>
+	         <param-name>forceEncoding</param-name>
+	         <param-value>true</param-value>
+	     </init-param>
+  	 </filter>
+	 <filter-mapping>
+	     <filter-name>encodingFilter</filter-name>
+	     <url-pattern>/*</url-pattern>
+	 </filter-mapping>
+	 
+	<!-- 에러별 처리 -->
+	<!-- 보안 등록 : Security => 권한부여, 자동로그인, 카카오/네이버로그인-->
+</web-app>
