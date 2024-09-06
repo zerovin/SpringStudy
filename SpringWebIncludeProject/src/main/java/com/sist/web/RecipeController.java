@@ -5,6 +5,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.lang.ProcessBuilder.Redirect;
@@ -185,5 +186,31 @@ public class RecipeController {
 			}
 		}
 		return "redirect:../main/main.do";
+	}
+	
+	// URL recipe/find.do라면 조건문 => 어노테이션
+	@RequestMapping("recipe/find.do") //검색어-POST, 페이징-GET => 동시처리
+	public String recipe_find(String fd, String page, Model model) {
+		if(fd==null) {
+			fd="감자";
+		}
+		if(page==null) {
+			page="1";
+		}
+		int curpage=Integer.parseInt(page);
+		int rowSize=20;
+		Map map=new HashMap();
+		map.put("start", (curpage*rowSize)-(rowSize-1));
+		map.put("end", rowSize*curpage);
+		map.put("fd", fd);
+		List<RecipeVO> list=rService.recipeFindData(map);
+		int totalpage=rService.recipeFindTotalPage(map);
+		model.addAttribute("list", list);
+		model.addAttribute("curpage", curpage);
+		model.addAttribute("totalpage", totalpage);
+		model.addAttribute("fd", fd);
+		
+		model.addAttribute("main_jsp", "../recipe/find.jsp");
+		return "main/main";
 	}
 }

@@ -12,6 +12,19 @@
 	    <div class="navbar-header">
 	      <a class="navbar-brand" href="../main/main.do">SpringMVC</a>
 	    </div>
+	    <!-- 
+	    	순서
+	    	1. .do 링크 요청
+	    	2. @Controller => .do가 들어오면 처리
+	    	3. 처리 => Mapper => DAO => Service => ServiceImpl
+	    	4. @Controller => DAO 연동 => 결과값 JSP로 전송
+	    	5. JSP에서 화면 출력
+	    	
+	    	공부 방식
+	    	1. 동작방식 => 실제 동작 확인
+	    	2. 코딩 순서
+	    	3. 검색
+	     -->
 	    <ul class="nav navbar-nav">
 	      <li class="active"><a href="../main/main.do">Home</a></li>
 	      <li class="dropdown">
@@ -35,7 +48,7 @@
 	          <li><a href="#">상품 찾기</a></li>
 	        </ul>
 	      </li>
-	      <li><a href="#">답변형 게시판</a></li>
+	      <li><a href="../board/list.do">답변형 게시판</a></li>
 	    </ul>
 	  </div>
 	</nav>
