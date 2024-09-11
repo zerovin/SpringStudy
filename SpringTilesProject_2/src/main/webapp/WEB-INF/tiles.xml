@@ -5,12 +5,29 @@
 		<put-attribute name="header" value="/WEB-INF/main/header.jsp"/>
 		<put-attribute name="home" value="/WEB-INF/main/home.jsp"/>
 	</definition>
+
+	<!-- 2중 include ex)Mypage, Adminpage -->
+	<definition name="mypage" template="/WEB-INF/mypage/mypage_main.jsp">
+		<put-attribute name="header" value="/WEB-INF/main/header.jsp"/>
+		<put-attribute name="menu" value="/WEB-INF/mypage/mypage_menu.jsp"/>
+		<put-attribute name="content" value="/WEB-INF/mypage/mypage_content.jsp"/>
+	</definition>
+	<definition name="mypage/*" extends="mypage">
+		<put-attribute name="content" value="/WEB-INF/mypage/{1}.jsp"/>
+	</definition>
+	<definition name="admin" template="/WEB-INF/admin/admin_main.jsp">
+		<put-attribute name="header" value="/WEB-INF/main/header.jsp"/>
+		<put-attribute name="menu" value="/WEB-INF/admin/admin_menu.jsp"/>
+		<put-attribute name="content" value="/WEB-INF/admin/admin_content.jsp"/>
+	</definition>
+	<definition name="admin/*" extends="admin">
+		<put-attribute name="content" value="/WEB-INF/admin/{1}.jsp"/>
+	</definition>
+	 
 	<definition name="*/*" extends="main">
 		<put-attribute name="home" value="/WEB-INF/{1}/{2}.jsp"/>
 	</definition>
 	<definition name="*/*/*" extends="main">
 		<put-attribute name="home" value="/WEB-INF/{1}/{2}/{3}.jsp"/>
 	</definition>
-	
-	<!-- 2중 include ex)Mypage, Adminpage -->
 </tiles-definitions>
