@@ -49,7 +49,7 @@ public class MainController {
 		if(fd==null) fd="all";
 		Map map=new HashMap();
 		map.put("fd", fd);
-		map.put("ss", ss.toUpperCase());
+		map.put("ss", ss);
 		List<EmpVO> list=eDao.empFindData(map);
 		//데이터 전송
 		model.addAttribute("list", list);

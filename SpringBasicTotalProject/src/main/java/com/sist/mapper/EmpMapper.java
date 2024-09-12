@@ -45,7 +45,7 @@ public interface EmpMapper {
 			+ "SELECT empno, ename, job, TO_CHAR(hiredate, 'YYYY-MM-DD') as dbday, sal, deptno "
 			+ "FROM emp "
 			+ "<if test=\"fd!='all'\">"
-			+ "WHERE ${fd} LIKE '%'||#{ss}||'%'"
+			+ "WHERE ${fd} LIKE '%'||UPPER(#{ss})||'%'"
 			+ "</if>"
 			+ "</script>"})
 	// ${} table, column - ename
