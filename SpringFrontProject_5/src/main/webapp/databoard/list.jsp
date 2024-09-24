@@ -53,14 +53,114 @@
 				 	파이썬 {{}} => vue와 충돌시 vue 형식 변경 [[]]
 				 	
 				 	ref : id/class
+				 	
+				 	Vue => Front (Vue/React/Next/Nuxt)
+				 
+				 	Vue => 패턴 MVVM
+				 	               ---------
+				 	               |       |
+				 	   Model   ViewModel  View  => 양방향
+				 	     |                 |
+				 	     -------------------
+				 	   Model : 데이터를 저장하는 변수 VO(Spring), DTO(MyBais,iBatis), Bean(JSP)
+				 	           data(){} => 출력변수 설정
+				 	   View : 화면 출력 => HTML
+				 	          => 태그 제어 (디렉티브 v-)
+				 	             v-for, v-if, v-else, v-show, v-on:click
+				 	   ViewModel : 상태관리(state=>데이터변경), 연산처리, 데이터 읽기, 전송
+				 	               Vue에서 지정하는 메소드 - 생명주기 메소드
+				 	                - mounted() : 시작과 동시에 멤버변수 초기화
+				 	                - updated() : component(이미지카드, 애니메이션 / 재사용가능)를 사용할 때
+				 	               사용자 정의 메소드
+				 	                - methods:{이번트 처리시 사용}
+				 	               option
+				 	                - filter:{} - 형식 000,000
+				 	                - computed:{} - 계산
+				 	                
+				 	1. Vue 객체 생성
+				 	   let app=Vue.createApp({
+				 	       data(){
+				 	          return {
+				 	             no:0 => int
+				 	             fd:'' => String
+				 	             list:[] => array => List
+				 	             vo:{} => object => VO => JSON(자바스크립트 객체 표현법)
+				 	             isShow:false => boolean
+				 	          }
+				 	       },
+				 	       ViewModel - 사용자 요청에 따라 데이터 처리
+				 	                   서버에서 데이터 읽기 / 서버로 데이터 전송
+				 	                   이미 만들어진 메소드 자동호출, 사용자 정의
+				 	       서버 연결 - ajax / axios / fetch
+				 	                 axios.get() => @GetMapping
+				 	                 axios.post() => @PostMapping
+				 	                 
+				 	                 axios.get('연결할 URL주소',{
+				 	                    params:{
+				 	                       보내는 데이터 설정
+				 	                    }
+				 	                 }).then(res=>{
+				 	                    정상 수행시 서버에서 전송한 데이터를 받는 위치
+				 	                 })
+				 	                 
+				 	                 axios.post('연결할 URL주소',formData/null,{
+				 	                    header/params:{
+				 	                       보내는 데이터 설정
+				 	                    }
+				 	                 }).then(res=>{
+				 	                    정상 수행시 서버에서 전송한 데이터를 받는 위치
+				 	                 })
+				 	                 
+				 	                 axios({
+				 	                    url:'',
+				 	                    type:'get/post'
+				 	                 })
+				 	                 
+				 	                 
+				 	   }).mount('제어하는 선택자')
+				 	   
+				 	   const {createApp,ref}=Vue
+				 	   createApp({
+				 	   
+				 	   }).mount()
+				 	   
+				 	   
+				 	   HTML에 Vue변수 출력
+				 	   <태그>{{변수명}}</태그>
+				 	   <태그 :속성="변수명"> => data()에 설정된 변수만 사용 가능
+				 	   
+				 	   디렉티브
+				 	   v-for="변수 in 배열명"
+				 	   v-for="(변수, 인덱스) in 배열명"
+				 	   v-if="조건설정" (==,!=/ ===,!==(권장))
+				 	   v-model="Vue변수" : Vue변수와 태그 매칭
+				 	   ref : 태그 제어
+				 	         <input type="text" id="name"> => $('#name')
+				 	         <input type="text" ref="name"> => this.$refs.name
+				 	         
+				 	   이벤트
+				 	   v-on:click="호출될 함수" => @click=""
+				 	   v-on:change="" => @change=""
+				 	   v-on:keydown="" => @keydown=""
+				 	                      @keydown.enter="", @keydown.space=""
+				 	   @submit.prevent="" => submit 기능 정지
 				 --%>
 				<tbody>
-					<tr v-for="">
-						<td width="10%" class="text-center"></td>
-						<td width="45%"></td>
-						<td width="15%" class="text-center"></td>
-						<td width="20%" class="text-center"></td>
-						<td width="10%" class="text-center"></td>
+					<tr v-for="(vo, index) in list">
+						<td width="10%" class="text-center">{{count-index}}</td>
+						<td width="45%">
+							<%-- 
+								v-bind:href => :href v-bind생략
+								HTML 태그의 속성에 값을 채운다 => :속성명
+								img => :src, :title
+								a => :href
+								emebed => :src
+							 --%>
+							<a :href="'detail.do?no='+vo.no">{{vo.subject}}</a>
+						</td>
+						<td width="15%" class="text-center">{{vo.name}}</td>
+						<td width="20%" class="text-center">{{vo.dbday}}</td>
+						<td width="10%" class="text-center">{{vo.hit}}</td>
 					</tr>
 				</tbody>
 				<tfoot>
@@ -79,20 +179,39 @@
 		let dataApp=Vue.createApp({
 			data(){
 				return{
-					data_list:[]	
+					list:[],
+					curpage:1,
+					totalpage:0,
+					count:0
 				}	
 			},
 			//생명주기 => onload => 브라우저 출력 전에 서버로부터 데이터를 받는 경우
 			mounted(){
-				
+				this.dataRecv()
 			},
 			// 멤버변수의 값이 변경된 경우 => Component 제작
+			// CallBack 함수 => Vue에 의해 자동 호출되는 함수
 			updated(){
 				
 			},
-			// 사용자 정의 메소드 => 이벤트
+			// 사용자 정의 메소드 => 이벤트 => 멤버메소드
 			methods:{
-				
+				//서버에서 데이터를 읽어 온다 => 이전/다음/시작시 마다 실행 => 반복제거 => 메소드 이용
+				dataRecv(){
+					axios.get("http://localhost:8080/web/databoard/list_vue.do",{
+						params:{
+							page:this.curpage
+						}
+					}).then(response=>{
+						console.log(response.data)
+						this.list=response.data.list
+						this.curpage=response.data.curpage
+						this.totalpage=response.data.totalpage
+						this.count=response.data.count
+					}).catch(error=>{
+						console.log(error.response)
+					})
+				}	
 			}
 			// components / filter / computed
 		}).mount('.container')
