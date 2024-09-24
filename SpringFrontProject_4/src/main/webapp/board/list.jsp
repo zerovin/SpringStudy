@@ -41,8 +41,8 @@
 					<th width="20%" class="text-center">작성일</th>
 					<th width="10%" class="text-center">조회수</th>
 				</tr>
-				<tr v-for="vo in board_list">
-					<td width="10%" class="text-center">{{vo.no}}</td>
+				<tr v-for="(vo, index) in board_list">
+					<td width="10%" class="text-center">{{count-index}}</td>
 					<td width="45%">
 						<a :href="'detail.do?no='+vo.no">{{vo.subject}}</a>&nbsp;
 						<sup v-if="today===vo.dbday"><img src="new.gif"></sup>
