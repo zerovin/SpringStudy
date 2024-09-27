@@ -59,7 +59,34 @@ public class FoodDAO {
 		mapper.hitIncrement(fno);
 		return mapper.foodDetailData(fno);
 	}
+	
 	public FoodVO foodInfoData(int fno) { //쿠키 목록 클릭시에 조회수 증가 X
 		return mapper.foodDetailData(fno);
+	}
+	
+	/*
+	 //검색
+	@Select("SELECT fno, name, poster, score, type, hit, num "
+			+ "FROM (SELECT fno, name, poster, score, type, hit, rownum as num "
+			+ "FROM (SELECT fno, name, poster, score, type, hit "
+			+ "FROM project_food_house "
+			//+ "<if test='fd!=null'>"
+			+ "WHERE address LIKE '%'||#{fd}||'%' "
+			//+ "</if>"
+			+ "ORDER BY fno ASC)) "
+			+ "WHERE num BETWEEN #{start} AND #{end}")
+	public List<FoodVO> foodFindListData(Map map);
+	
+	// 총페이지
+	@Select("SELECT CEIL(COUNT(*)/12.0) FROM project_food_house "
+			+ "WHERE address LIKE '%'||#{fd}||'%'")
+	public int foodFindTotalPage(Map map); 
+	 */
+	public List<FoodVO> foodFindListData(Map map){
+		return mapper.foodFindListData(map);
+	}
+
+	public int foodFindTotalPage(Map map) {
+		return mapper.foodFindTotalPage(map);
 	}
 }

@@ -1,7 +1,5 @@
 package com.sist.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -28,6 +26,24 @@ public class RecipeServiceImpl implements RecipeService{
 	public ChefVO chefToday() {
 		// TODO Auto-generated method stub
 		return cDao.chefToday(); 
+	}
+
+	@Override
+	public List<RecipeVO> recipeListData(Map map) {
+		// TODO Auto-generated method stub
+		return rDao.recipeListData(map);
+	}
+
+	@Override
+	public int recipeTotalPage() {
+		// TODO Auto-generated method stub
+		return rDao.recipeTotalPage();
+	}
+
+	@Override
+	public RecipeDetailVO recipeDetailData(int no) {
+		// TODO Auto-generated method stub
+		return rDao.recipeDetailData(no);
 	}
 
 }
