@@ -89,4 +89,15 @@ public class FoodDAO {
 	public int foodFindTotalPage(Map map) {
 		return mapper.foodFindTotalPage(map);
 	}
+	
+	/*
+	//예약
+	@Select("SELECT fno, name, poster "
+			+ "FROM project_food_house "
+			+ "WHERE type LIKE '%'||#{type}||'%'")
+	public List<FoodVO> foodTypeListData(String type); 
+	 */
+	public List<FoodVO> foodTypeListData(String type){
+		return mapper.foodTypeListData(type);
+	}
 }
