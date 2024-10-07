@@ -6,13 +6,13 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
-	.page-link{
-		cursor:pointer;
-	}
+.page-link:hover{
+   cursor: pointer;
+}
 </style>
 </head>
 <body>
-	 <!-- ****** Breadcumb Area Start ****** -->
+<!-- ****** Breadcumb Area Start ****** -->
     <div class="breadcumb-area" style="background-image: url(../img/bg-img/breadcumb.jpg);">
         <div class="container h-100">
             <div class="row h-100 align-items-center">
@@ -30,8 +30,8 @@
                 <div class="col-12">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Archive Page</li>
+                            <li class="breadcrumb-item"></li>
+                            <li class="breadcrumb-item active" aria-current="page"></li>
                         </ol>
                     </nav>
                 </div>
@@ -44,15 +44,14 @@
     <section class="archive-area section_padding_80" id="listApp">
         <div class="container">
             <div class="row">
-
                 <!-- Single Post -->
                 <div class="col-12 col-md-6 col-lg-4" v-for="vo in recipe_list">
                     <div class="single-post wow fadeInUp" data-wow-delay="0.1s">
                         <!-- Post Thumb -->
                         <div class="post-thumb">
-                        	<a :href="'../recipe/detail.do?no='+vo.no">
-                            	<img :src="vo.poster" alt="" style="width:350px;height:200px;">
-                            </a>
+                           <a :href="'../recipe/detail.do?no='+vo.no">
+                            <img :src="vo.poster" style="width: 350px;height: 200px">
+                           </a>
                         </div>
                         <!-- Post Content -->
                         <div class="post-content">
@@ -65,6 +64,8 @@
                                     <!-- Post Date -->
                                     <div class="post-date">
                                         <a href="#" style="color:orange;">{{vo.hit}}</a>
+                                        
+                     
                                     </div>
                                 </div>
                                 <!-- Post Comment & Share Area -->
@@ -75,7 +76,7 @@
                                     </div>
                                     <!-- Post Comments -->
                                     <div class="post-comments">
-                                        <a href="#"><i class="fa fa-comment-o" aria-hidden="true"></i> </a>
+                                        <a href="#"><i class="fa fa-comment-o" aria-hidden="true"></i> 12</a>
                                     </div>
                                     <!-- Post Share -->
                                     <div class="post-share">
@@ -90,17 +91,21 @@
                     </div>
                 </div>
 
+                
+
                 <div class="col-12">
                     <div class="pagination-area d-sm-flex mt-15">
                         <nav aria-label="#">
                             <ul class="pagination">
-                            	<li class="page-item" v-if="startpage>1">
+                                <li class="page-item" v-if="startPage>1">
                                     <a class="page-link" @click="prev()"><i class="fa fa-angle-double-left" aria-hidden="true"></i> 이전</a>
                                 </li>
-                                <li :class="i==curpage?'page-item active':'page-item'" v-for="i in range(startpage, endpage)">
+                                
+                                <li :class="i===curpage?'page-item active':'page-item'" v-for="i in range(startPage,endPage)">
                                     <a class="page-link" @click="pageChange(i)">{{i}}</a>
                                 </li>
-                                <li class="page-item" v-if="endpage<totalpage">
+                     
+                                <li class="page-item" v-if="endPage<totalpage">
                                     <a class="page-link" @click="next()">다음 <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
                                 </li>
                             </ul>
@@ -114,62 +119,62 @@
             </div>
         </div>
     </section>
-    <!-- ****** Archive Area End ****** -->
     <script>
-    	let listApp=Vue.createApp({
-    		//Model => 데이터 관리
-    		data(){
-    			return{
-    				recipe_list:[],
-    				curpage:1,
-    				totalpage:0,
-    				startpage:0,
-    				endpage:0
-    			}
-    		},
-    		mounted(){
-    			this.dataRecv()
-    		},
-    		methods:{
-    			prev(){
-    				this.curpage=this.startpage-1
-    				this.dataRecv()
-    			},
-    			next(){
-    				this.curpage=this.endpage+1
-    				this.dataRecv()
-    			},
-    			pageChange(page){
-    				this.curpage=page
-    				this.dataRecv()
-    			},
-    			range(start, end){
-    				let arr=[]
-    				let len=end-start
-    				for(let i=0;i<=len;i++){
-    					arr[i]=start
-    					start++;
+     let listApp=Vue.createApp({
+    	 //Model => 데이터관리 
+    	 data(){
+    		 return  {
+    			 recipe_list:[],
+    			 curpage:1,
+    			 totalpage:0,
+    			 startPage:0,
+    			 endPage:0
+    		 }
+    	 },
+    	 mounted(){
+    		 this.dataRecv()
+    	 },
+    	 methods:{
+    		 prev(){
+    			 this.curpage=this.startPage-1
+    			 this.dataRecv()
+    		 },
+    		 next(){
+    			 this.curpage=this.endPage+1
+    			 this.dataRecv()
+    		 },
+    		 pageChange(page){
+    			 this.curpage=page
+    			 this.dataRecv()
+    		 },
+    		 range(start,end){
+    			 let arr=[]
+    			 let len=end-start
+    			 for(let i=0;i<=len;i++)
+    			 {
+    				 arr[i]=start
+    				 start++;
+    			 }
+    			 return arr
+    		 },
+    		 dataRecv(){
+    			 axios.get('../recipe/list_vue.do',{
+    				params:{
+    					 page:this.curpage
     				}
-    				return arr
-    			},
-    			dataRecv(){
-    				axios.get('../recipe/list_vue.do',{
-    					params:{
-    						page:this.curpage
-    					}
-    				}).then(response=>{
-    					console.log(response.data)
-    					this.recipe_list=response.data.list
-    					this.curpage=response.data.curpage
-    					this.totalpage=response.data.totalpage
-    					this.startpage=response.data.startpage
-    					this.endpage=response.data.endpage
-    				}).catch(error=>{
-    					console.log(error.response)
-    				})
-    			}
-    		}
-    	}).mount('#listApp');
+    			 }).then(response=>{
+    				 console.log(response.data)
+    				 this.recipe_list=response.data.list
+    				 this.curpage=response.data.curpage
+    				 this.totalpage=response.data.totalpage
+    				 this.startPage=response.data.startPage
+    				 this.endPage=response.data.endPage
+    			 }).catch(error=>{
+    				 console.log(error.response)
+    			 })
+    		 }
+    	 }
+     }).mount('#listApp')
     </script>
 </body>
 </html>
