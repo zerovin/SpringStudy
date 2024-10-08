@@ -8,6 +8,11 @@
 <title>Insert title here</title>
 <script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=dee4629f5156da2c49e694161e31a96a&libraries=services"></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+<style>
+	.nav-link{
+		cursor:pointer;
+	}
+</style>
 </head>
 <body>
   <!-- ****** Breadcumb Area Start ****** -->
@@ -94,9 +99,11 @@
                             	</tr>
                             	<tr>
                             		<td class="text-right">
-                            			<a href="#" class="btn btn-xs btn-danger">좋아요</a>
-                            			<a href="#" class="btn btn-xs btn-success">찜하기</a>
-                            			<a href="#" class="btn btn-xs btn-info">예약</a>
+                            			<c:if test="${sessionScope.userId!=null}">
+	                            			<a href="#" class="btn btn-xs btn-danger">좋아요</a>
+	                            			<a href="#" class="btn btn-xs btn-success">찜하기</a>
+	                            			<a href="#" class="btn btn-xs btn-info">예약</a>
+                            			</c:if>
                             			<a href="../food/list.do" class="btn btn-xs btn-warning">목록</a>
                             		</td>
                             	</tr>
@@ -107,74 +114,75 @@
                             	</tr>
                             </table>
                             <!-- Comment Area Start -->
-                            <div class="comment_area section_padding_50 clearfix">
-                                <h4 class="mb-30">2 Comments</h4>
-
-                                <ol>
-                                    <!-- Single Comment Area -->
-                                    <li class="single_comment_area">
-                                        <div class="comment-wrapper d-flex">
-                                            <!-- Comment Meta -->
-                                            <div class="comment-author">
-                                                <img src="../img/blog-img/17.jpg" alt="">
-                                            </div>
-                                            <!-- Comment Content -->
-                                            <div class="comment-content">
-                                                <span class="comment-date text-muted">27 Aug 2018</span>
-                                                <h5>Brandon Kelley</h5>
-                                                <p>Neque porro qui squam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p>
-                                                <a href="#">Like</a>
-                                                <a class="active" href="#">Reply</a>
-                                            </div>
-                                        </div>
-                                        <ol class="children">
-                                            <li class="single_comment_area">
-                                                <div class="comment-wrapper d-flex">
-                                                    <!-- Comment Meta -->
-                                                    <div class="comment-author">
-                                                        <img src="../img/blog-img/18.jpg" alt="">
-                                                    </div>
-                                                    <!-- Comment Content -->
-                                                    <div class="comment-content">
-                                                        <span class="comment-date text-muted">27 Aug 2018</span>
-                                                        <h5>Brandon Kelley</h5>
-                                                        <p>Neque porro qui squam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p>
-                                                        <a href="#">Like</a>
-                                                        <a class="active" href="#">Reply</a>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ol>
-                                    </li>
-                                    <li class="single_comment_area">
-                                        <div class="comment-wrapper d-flex">
-                                            <!-- Comment Meta -->
-                                            <div class="comment-author">
-                                                <img src="../img/blog-img/19.jpg" alt="">
-                                            </div>
-                                            <!-- Comment Content -->
-                                            <div class="comment-content">
-                                                <span class="comment-date text-muted">27 Aug 2018</span>
-                                                <h5>Brandon Kelley</h5>
-                                                <p>Neque porro qui squam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p>
-                                                <a href="#">Like</a>
-                                                <a class="active" href="#">Reply</a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ol>
-                            </div>
-
-                            <!-- Leave A Comment -->
-                            <div class="leave-comment-area section_padding_50 clearfix">
-                                <div class="comment-form">
-                                    <h4 class="mb-30">Leave A Comment</h4>
-
-                                    <!-- Comment Form -->
-                                    <form action="#" method="post">
-                                       
-                                    </form>
-                                </div>
+                            <div id="replyApp">
+	                            <div class="comment_area section_padding_50 clearfix">
+	                                <h4 class="mb-30">댓글</h4>
+	
+	                                <ol>
+	                                    <!-- Single Comment Area -->
+	                                    <li class="single_comment_area" v-for="vo in reply_list">
+	                                        <div class="comment-wrapper d-flex" v-if="vo.group_tab===0">
+	                                            <!-- Comment Meta -->
+	                                            <div class="comment-author">
+	                                                <img :src="vo.sex=='남자'?'../img/icon/man.png':'../img/icon/woman.png'" alt="">
+	                                            </div>
+	                                            <!-- Comment Content -->
+	                                            <div class="comment-content">
+	                                                <span class="comment-date text-muted">{{vo.dbday}}</span>
+	                                                <h5>{{vo.name}}</h5>
+	                                                <p>{{vo.msg}}</p>
+	                                                <button v-if="sessionId===vo.id" class="btn-xs btn-danger" style="margin-left:2px;">Update</button>
+	                                                <button v-if="sessionId===vo.id" class="btn-xs btn-info" style="margin-left:2px;" @click="replyDelete(vo.cno)">Delete</button>
+	                                                <button class="active insert btn-xs" v-if="sessionId!=''" @click="replyForm(vo.cno)" :id="'i'+vo.cno" style="margin-left:2px;">Reply</button>
+	                                                <button v-if="sessionId!==vo.id && sessionId!==''" class="btn-xs">Like<button>
+				                                    <table class="table ins" style="display:none" :id="'in'+vo.cno">
+				                                    	<tr>
+				                                    		<td>
+				                                    			<textarea rows="4" cols="40" style="float:left" :id="'msg'+vo.cno"></textarea>
+				                                    			<input type="button" value="댓글" @click="replyReplyInsert(vo.cno)" style="float:left;background-color:blue;color:white;width:80px;height:99px;">
+				                                    		</td>
+				                                    	</tr>
+				                                    </table>
+	                                            </div>
+	                                        </div>
+	                                        <ol class="children" v-if="vo.group_tab===1">
+	                                            <li class="single_comment_area">
+	                                                <div class="comment-wrapper d-flex">
+	                                                    <!-- Comment Meta -->
+	                                                    <div class="comment-author">
+	                                                        <img :src="vo.sex=='남자'?'../img/icon/man.png':'../img/icon/woman.png'" alt="">
+	                                                    </div>
+	                                                    <!-- Comment Content -->
+	                                                    <div class="comment-content">
+	                                                        <span class="comment-date text-muted">{{vo.dbday}}</span>
+	                                                        <h5>{{vo.name}}</h5>
+	                                                        <p>{{vo.msg}}</p>
+	                                                        <a href="#" v-if="sessionId===vo.id">Update</a>
+			                                                <a href="#" v-if="sessionId===vo.id">Delete</a>
+			                                                <a href="#" v-if="sessionId!==vo.id && sessionId!==''">Like</a>
+	                                                    </div>
+	                                                </div>
+	                                            </li>
+	                                        </ol>
+	                                    </li>
+	                                </ol>
+	                            </div>
+	                            <!-- 댓글 페이지네이션 -->
+	                            <!-- Leave A Comment -->
+	                            <c:if test="${sessionScope.userId!=null}">
+		                            <div class="leave-comment-area section_padding_50 clearfix">
+		                                <div class="comment-form">
+		                                    <table class="table">
+		                                    	<tr>
+		                                    		<td>
+		                                    			<textarea rows="4" cols="70" style="float:left" ref="msg" v-model="msg"></textarea>
+		                                    			<input type="button" value="댓글" @click="replyInsert()" style="float:left;background-color:blue;color:white;width:80px;height:99px;">
+		                                    		</td>
+		                                    	</tr>
+		                                    </table>
+		                                </div>
+		                            </div>
+	                            </c:if>
                             </div>
                         </div>
                     </div>
@@ -183,6 +191,127 @@
       </div>
     </section>
     <script>
+    let replyApp=Vue.createApp({
+    	data(){
+    		return{
+    			rno:${fno},
+    			reply_list:[],
+    			curpage:1,
+    			totalpage:0,
+    			startpage:0,
+    			endpage:0,
+    			type:1,
+    			sessionId:'${sessionId}',
+    			msg:'',
+    			isReply:false
+    		}
+    	},
+    	mounted(){
+    		this.dataRecv()
+    	},
+    	methods:{
+    		replyDelete(cno){
+    			axios.get('../comment/delete_vue.do',{
+    				params:{
+    					cno:cno,
+    					rno:this.rno,
+    					type:this.type
+    				}
+    			}).then(response=>{
+    				console.log(response.data)
+    				this.reply_list=response.data.list
+    				this.curpage=response.data.curpage
+    				this.totalpage=response.data.totalpage
+    				this.startpage=response.data.startpage
+    				this.endpage=response.data.endpage
+    			}).catch(error=>{
+    				console.log(error.response)
+    			})
+    		},
+    		replyReplyInsert(cno){
+    			let msg=$('#msg'+cno).val()
+    			if(msg.trim()===""){
+    				$('#msg'+cno).focus()
+    				return
+    			}
+    			axios.post('../comment/reply_insert_vue.do',null,{
+    				params:{
+    					rno:this.rno,
+    					type:this.type,
+    					msg:msg,
+    					cno:cno
+    				}
+    			}).then(response=>{
+    				console.log(response.data)
+    				this.reply_list=response.data.list
+    				this.curpage=response.data.curpage
+    				this.totalpage=response.data.totalpage
+    				this.startpage=response.data.startpage
+    				this.endpage=response.data.endpage
+    				$('#msg'+cno).val('')
+    				$('#in'+cno).hide()
+    				$('#i'+cno).text("Reply")
+    			}).catch(error=>{
+    				console.log(error.response)
+    			})
+    		},
+    		replyForm(cno){
+    			$('.ins').hide()
+    			$('.insert').text('Reply')
+    			if(this.isReply===false){
+    				this.isReply=true
+    				$('#in'+cno).show()
+    				$('#i'+cno).text("Cancel")
+    			}else{
+    				this.isReply=false
+    				$('#in'+cno).hide()
+    				$('#i'+cno).text("Reply")
+    			}
+    		},
+    		replyInsert(){
+    			if(this.msg===''){
+    				this.$refs.msg.focus()
+    				return
+    			}
+    			axios.post('../comment/insert_vue.do',null,{
+    				params:{
+    					rno:this.rno,
+    					type:this.type,
+    					msg:this.msg
+    				}
+    			}).then(response=>{
+    				console.log(response.data)
+    				this.reply_list=response.data.list
+    				this.curpage=response.data.curpage
+    				this.totalpage=response.data.totalpage
+    				this.startpage=response.data.startpage
+    				this.endpage=response.data.endpage
+    				this.msg=""
+    			}).catch(error=>{
+    				console.log(error.response)
+    			})
+    		},
+    		dataRecv(){
+    			axios.get('../comment/list_vue.do',{
+    				params:{
+    					rno:this.rno,
+    					type:this.type,
+    					page:this.curpage
+    				}
+    			}).then(response=>{
+    				console.log(response.data)
+    				this.reply_list=response.data.list
+    				this.curpage=response.data.curpage
+    				this.totalpage=response.data.totalpage
+    				this.startpage=response.data.startpage
+    				this.endpage=response.data.endpage
+    			}).catch(error=>{
+    				console.log(error.response)
+    			})
+    		}
+    	}
+    }).mount('#replyApp')
+    
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
     mapOption = {
         center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
