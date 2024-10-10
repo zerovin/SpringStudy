@@ -31,7 +31,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Archive Page</li>
+                            <li class="breadcrumb-item active" aria-current="page">맛집 목록</li>
                         </ol>
                     </nav>
                 </div>
@@ -75,7 +75,7 @@
                                     </div>
                                     <!-- Post Comments -->
                                     <div class="post-comments">
-                                        <a href="#"><i class="fa fa-comment-o" aria-hidden="true"></i> </a>
+                                        <a href="#"><i class="fa fa-comment-o" aria-hidden="true"></i> {{vo.replycount}}</a>
                                     </div>
                                     <!-- Post Share -->
                                     <div class="post-share">

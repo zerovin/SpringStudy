@@ -1,5 +1,6 @@
 package com.sist.dao;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -87,6 +88,7 @@ public class CommentDAO {
 	public void commentInsert(CommentVO vo); 
 	 */
 	public void commentInsert(CommentVO vo) {
+		mapper.foodReplyIncrement(vo.getRno());
 		mapper.commentInsert(vo);
 	}
 	
@@ -118,8 +120,74 @@ public class CommentDAO {
 		vo.setGroup_step(pvo.getGroup_step()+1);
 		vo.setGroup_tab(pvo.getGroup_tab()+1);
 		
+		mapper.foodReplyIncrement(vo.getRno());
 		mapper.commentGroupStepIncrement(pvo);
-		mapper.commentInsert(vo);
+		mapper.commentReplyReplyInsert(vo);
 		mapper.commentDepthIncrement(cno);
 	}
+	
+	/*
+	 *  MyBatis
+	 *  CRUD => INSERT / UPDATE / DELETE / SELECT
+	 *  
+	 *  spring MyBatis
+	 *  CRUD / JOIN / 동적쿼리 / Transaction
+	 */
+	/*
+	 //삭제
+	@Select("SELECT group_id, group_step FROM spring_comment "
+			+ "WHERE cno=#{cno}")
+	public CommentVO commentDeleteInfoData(int cno);
+	*/
+	public CommentVO commentDeleteInfoData(int cno) {
+		return mapper.commentDeleteInfoData(cno);
+	}
+	
+	/*
+	@Delete("<script>"
+			+ "DELETE FROM spring_comment "
+			+ "WHERE "
+			+ "<if test=\"group_step==0\">"
+			+ "group_id=#{group_id}"
+			+ "</if> "
+			+ "<if test=\"group_step!=0\">"
+			+ "cno=#{cno}"
+			+ "</if>"
+			+ "</script>")
+	public void commentDelete(Map map); 
+	 */
+	public void commentDelete(Map map) {
+		mapper.commentDelete(map);
+	}
+	
+	/*
+	 @Update("UPDATE project_food_house SET "
+			+ "replycount=replycount+1 "
+			+ "WHERE fno=#{fno}")
+	public void foodReplyIncrement(int fno);
+	
+	public void foodReplyIncrement(int fno) {
+		mapper.foodReplyIncrement(fno);
+	}
+	*/
+	/*
+	@Update("UPDATE project_food_house SET "
+			+ "replycount=replycount-1 "
+			+ "WHERE fno=#{fno}")
+	public void foodReplyDecrement(int fno); 
+		*/
+	public void foodReplyDecrement(int fno) {
+		mapper.foodReplyDecrement(fno);
+	}
+	
+	/*
+	 @Update("UPDATE spring_comment SET "
+			+ "msg=#{msg}, modifydate=SYSDATE "
+			+ "WHERE cno=#{cno}")
+	public void commentUpdate(CommentVO vo); 
+	 */
+	public void commentUpdate(CommentVO vo) {
+		mapper.commentUpdate(vo);
+	}
+
 }

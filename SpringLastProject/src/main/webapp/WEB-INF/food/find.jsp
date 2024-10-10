@@ -77,7 +77,7 @@
 	                                    </div>
 	                                    <!-- Post Comments -->
 	                                    <div class="post-comments">
-	                                        <a href="#"><i class="fa fa-comment-o" aria-hidden="true"></i> </a>
+	                                        <a href="#"><i class="fa fa-comment-o" aria-hidden="true"></i> {{vo.replycount}}</a>
 	                                    </div>
 	                                    <!-- Post Share -->
 	                                    <div class="post-share">

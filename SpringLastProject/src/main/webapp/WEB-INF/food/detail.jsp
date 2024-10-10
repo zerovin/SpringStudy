@@ -131,15 +131,23 @@
 	                                                <span class="comment-date text-muted">{{vo.dbday}}</span>
 	                                                <h5>{{vo.name}}</h5>
 	                                                <p>{{vo.msg}}</p>
-	                                                <button v-if="sessionId===vo.id" class="btn-xs btn-danger" style="margin-left:2px;">Update</button>
+	                                                <button v-if="sessionId===vo.id" class="btn-xs btn-danger update" @click="replyUpdateForm(vo.cno)" :id="'u'+vo.cno" style="margin-left:2px;">Update</button>
 	                                                <button v-if="sessionId===vo.id" class="btn-xs btn-info" style="margin-left:2px;" @click="replyDelete(vo.cno)">Delete</button>
 	                                                <button class="active insert btn-xs" v-if="sessionId!=''" @click="replyForm(vo.cno)" :id="'i'+vo.cno" style="margin-left:2px;">Reply</button>
-	                                                <button v-if="sessionId!==vo.id && sessionId!==''" class="btn-xs">Like<button>
+	                                                <button v-if="sessionId!==vo.id && sessionId!==''" class="btn-xs">Like</button>
 				                                    <table class="table ins" style="display:none" :id="'in'+vo.cno">
 				                                    	<tr>
 				                                    		<td>
-				                                    			<textarea rows="4" cols="40" style="float:left" :id="'msg'+vo.cno"></textarea>
+				                                    			<textarea rows="4" cols="50" style="float:left" :id="'msg'+vo.cno"></textarea>
 				                                    			<input type="button" value="댓글" @click="replyReplyInsert(vo.cno)" style="float:left;background-color:blue;color:white;width:80px;height:99px;">
+				                                    		</td>
+				                                    	</tr>
+				                                    </table>
+				                                    <table class="table ups" style="display:none" :id="'up'+vo.cno">
+				                                    	<tr>
+				                                    		<td>
+				                                    			<textarea rows="4" cols="50" style="float:left" :id="'umsg'+vo.cno">{{vo.msg}}</textarea>
+				                                    			<input type="button" value="수정" @click="replyUpdate(vo.cno)" style="float:left;background-color:blue;color:white;width:80px;height:99px;">
 				                                    		</td>
 				                                    	</tr>
 				                                    </table>
@@ -157,9 +165,17 @@
 	                                                        <span class="comment-date text-muted">{{vo.dbday}}</span>
 	                                                        <h5>{{vo.name}}</h5>
 	                                                        <p>{{vo.msg}}</p>
-	                                                        <a href="#" v-if="sessionId===vo.id">Update</a>
-			                                                <a href="#" v-if="sessionId===vo.id">Delete</a>
-			                                                <a href="#" v-if="sessionId!==vo.id && sessionId!==''">Like</a>
+	                                                        <button v-if="sessionId===vo.id" class="btn-xs btn-danger update" @click="replyUpdateForm(vo.cno)" :id="'u'+vo.cno" style="margin-left:2px;">Update</button>
+	                                                		<button v-if="sessionId===vo.id" class="btn-xs btn-info" style="margin-left:2px;" @click="replyDelete(vo.cno)">Delete</button>
+			                                                <button v-if="sessionId!==vo.id && sessionId!==''" class="btn-xs">Like</button>
+			                                                <table class="table ups" style="display:none" :id="'up'+vo.cno">
+						                                    	<tr>
+						                                    		<td>
+						                                    			<textarea rows="4" cols="45" style="float:left" :id="'umsg'+vo.cno">{{vo.msg}}</textarea>
+						                                    			<input type="button" value="수정" @click="replyUpdate(vo.cno)" style="float:left;background-color:blue;color:white;width:80px;height:99px;">
+						                                    		</td>
+						                                    	</tr>
+						                                    </table>
 	                                                    </div>
 	                                                </div>
 	                                            </li>
@@ -203,13 +219,42 @@
     			type:1,
     			sessionId:'${sessionId}',
     			msg:'',
-    			isReply:false
+    			isReply:false,
+    			upReply:false
     		}
     	},
     	mounted(){
     		this.dataRecv()
     	},
     	methods:{
+    		replyUpdate(cno){
+    			let msg=$('#umsg'+cno).val()
+    			if(msg.trim()===""){
+    				$('#umsg'+cno).focus()
+    				return
+    			}
+    			axios.get('../comment/update_vue.do',{
+    				params:{
+    					cno:cno,
+    					rno:this.rno,
+    					type:this.type,
+    					msg:msg
+    				}
+    			}).then(response=>{
+    				console.log(response.data)
+    				this.reply_list=response.data.list
+    				this.curpage=response.data.curpage
+    				this.totalpage=response.data.totalpage
+    				this.startpage=response.data.startpage
+    				this.endpage=response.data.endpage
+    				this.upReply=false
+    				$('#umsg'+cno).val(msg)
+    				$('#up'+cno).hide()
+    				$('#u'+cno).text("Update")
+    			}).catch(error=>{
+    				console.log(error.response)
+    			})
+    		},
     		replyDelete(cno){
     			axios.get('../comment/delete_vue.do',{
     				params:{
@@ -255,8 +300,25 @@
     				console.log(error.response)
     			})
     		},
+    		replyUpdateForm(cno){
+    			$('.ins').hide()
+    			$('.ups').hide()
+    			$('.update').text('Update')
+    			$('.insert').text('Reply')
+    			if(this.upReply===false){
+    				this.upReply=true
+    				$('#up'+cno).show()
+    				$('#u'+cno).text("Cancel")
+    			}else{
+    				this.upReply=false
+    				$('#up'+cno).hide()
+    				$('#u'+cno).text("Update")
+    			}
+    		},
     		replyForm(cno){
     			$('.ins').hide()
+    			$('.ups').hide()
+    			$('.update').text('Update')
     			$('.insert').text('Reply')
     			if(this.isReply===false){
     				this.isReply=true
