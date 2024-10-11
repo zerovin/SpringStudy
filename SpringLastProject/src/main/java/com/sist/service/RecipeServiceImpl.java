@@ -22,11 +22,6 @@ public class RecipeServiceImpl implements RecipeService{
 		return rDao.recipeHitTop8();
 	}
 
-	@Override
-	public ChefVO chefToday() {
-		// TODO Auto-generated method stub
-		return cDao.chefToday(); 
-	}
 
 	@Override
 	public List<RecipeVO> recipeListData(Map map) {
@@ -45,5 +40,32 @@ public class RecipeServiceImpl implements RecipeService{
 		// TODO Auto-generated method stub
 		return rDao.recipeDetailData(no);
 	}
+	
+	@Override
+	public List<RecipeVO> recipeMakeData(String chef) {
+		// TODO Auto-generated method stub
+		return rDao.recipeMakeData(chef);
+	}
+	
+	//-----------------------
+	
+	@Override
+	public ChefVO chefToday() {
+		// TODO Auto-generated method stub
+		return cDao.chefToday(); 
+	}
+
+	@Override
+	public List<ChefVO> chefListData(Map map) {
+		// TODO Auto-generated method stub
+		return cDao.chefListData(map);
+	}
+
+	@Override
+	public int chefTotalPage() {
+		// TODO Auto-generated method stub
+		return cDao.chefTotalPage();
+	}
+
 
 }

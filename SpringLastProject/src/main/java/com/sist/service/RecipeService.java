@@ -6,8 +6,12 @@ import com.sist.vo.*;
 public interface RecipeService {
 	public RecipeVO recipeMaxHitData();
 	public List<RecipeVO> recipeHitTop8();
-	public ChefVO chefToday();
 	public List<RecipeVO> recipeListData(Map map);
 	public int recipeTotalPage();
 	public RecipeDetailVO recipeDetailData(int no);
+	public List<RecipeVO> recipeMakeData(String chef);
+	
+	public ChefVO chefToday();
+	public List<ChefVO> chefListData(Map map);
+	public int chefTotalPage();
 }

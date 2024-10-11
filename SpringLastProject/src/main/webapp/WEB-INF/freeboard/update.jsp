@@ -68,10 +68,58 @@
     			}
     		},
     		mounted(){
-    			
+    			axios.get('../freeboard/update_vue.do',{
+    				params:{
+    					no:this.no
+    				}
+    			}).then(response=>{
+    				console.log(response.data)
+    				this.subject=response.data.subject
+    				this.content=response.data.content
+    				//변수값 갱신 => v-model로 값 전송 => HTML값 변경 (자동화처리 - React)
+    				/*
+    					response={
+    						config:{}, => response.config
+    						data:{subject:'',content:''}, => response.data : 실제 서버에서 전송된 값
+    						header:{} => response.header
+    					}
+    				
+    					response.data:{subejct:'',content:''} => 객체
+    					               ======= 멤버변수 ======
+    				*/
+    			}).catch(error=>{
+    				console.log(error.response)
+    			})
     		},
     		methods:{
-    			
+    			boardUpdate(){
+    				if(this.subject===''){
+    					this.$refs.subject.focus()
+    					return
+    				}
+    				if(this.content===''){
+    					this.$refs.content.focus()
+    					return
+    				}
+    				
+    				// 서버전송
+    				// Rest => GET/POST/PUT/DELETE
+    				axios.post('../freeboard/update_ok_vue.do',null,{
+    					params:{
+    						no:this.no,
+    						subject:this.subject,
+    						content:this.content
+    					}
+    				}).then(response=>{
+    					if(response.data==="yes"){
+    						location.href="../freeboard/detail.do?no="+this.no
+    					}else{
+    						alert(response.data)
+    					}
+    				}).catch(error=>{
+    					console.log(error.response)
+    				})
+    			}
     		}
     	}).mount('#updateApp')
     </script>

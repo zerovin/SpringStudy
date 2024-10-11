@@ -19,4 +19,25 @@ public class ChefDAO {
 	public ChefVO chefToday() {
 		return mapper.chefToday();
 	}
+	
+	/*
+	//목록출력
+	@Select("SELECT chef, poster, mem_cont1, mem_cont3, mem_cont7, mem_cont2, num "
+			+ "FROM (SELECT chef, poster, mem_cont1, mem_cont3, mem_cont7, mem_cont2, rownum as num "
+			+ "FROM (SELECT /*+ INDEX_ASC(chef chef_chef_pk)/chef, poster, mem_cont1, mem_cont3, mem_cont7, mem_cont2 "
+			+ "FROM chef))"
+			+ "WHERE num BETWEEN #{start} AND #{end}")
+	public List<ChefVO> chefListData(Map map);
+	*/
+	public List<ChefVO> chefListData(Map map){
+		return mapper.chefListData(map);
+	}
+	
+	/*
+	@Select("SELECT CEIL(COUNT(*)/20.0) FROM chef")
+	public int chefTotalPage(); 
+	 */
+	public int chefTotalPage() {
+		return mapper.chefTotalPage();
+	}
 }
