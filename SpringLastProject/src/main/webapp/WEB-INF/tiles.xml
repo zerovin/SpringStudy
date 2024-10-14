@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 <tiles-definitions>
+	<!-- 2중 Include  -->
 	<definition name="main" template="/WEB-INF/main/main.jsp">
 		<put-attribute name="header" value="/WEB-INF/main/header.jsp"/>
 		<put-attribute name="home" value="/WEB-INF/main/home.jsp"/>
 		<put-attribute name="footer" value="/WEB-INF/main/footer.jsp"/>
 	</definition>
+	<definition name="mypage" template="/WEB-INF/mypage/mypage_main.jsp">
+		<put-attribute name="header" value="/WEB-INF/main/header.jsp"/>
+		<put-attribute name="mypage_menu" value="/WEB-INF/mypage/mypage_menu.jsp"/>
+		<put-attribute name="mypage_home" value="/WEB-INF/mypage/mypage_home.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/main/footer.jsp"/>
+	</definition>
+		<definition name="admin" template="/WEB-INF/admin/admin_main.jsp">
+		<put-attribute name="header" value="/WEB-INF/main/header.jsp"/>
+		<put-attribute name="admin_menu" value="/WEB-INF/admin/admin_menu.jsp"/>
+		<put-attribute name="admin_home" value="/WEB-INF/admin/admin_home.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/main/footer.jsp"/>
+	</definition>
+	<definition name="mypage/*" extends="mypage">
+		<put-attribute name="mypage_home" value="/WEB-INF/mypage/{1}.jsp"/>
+	</definition>
+	<definition name="admin/*" extends="admin">
+		<put-attribute name="admin_home" value="/WEB-INF/admin/{1}.jsp"/>
+	</definition>
+	
 	<definition name="*/*" extends="main">
 		<put-attribute name="home" value="/WEB-INF/{1}/{2}.jsp"/>
 	</definition>
@@ -13,16 +33,5 @@
 		<put-attribute name="home" value="/WEB-INF/{1}/{2}/{3}.jsp"/>
 	</definition>
 	
-	<!-- 2중 Include  -->
-	<!-- 
-	<definition name="mypage" template="/WEB-INF/mypage/mypage_main.jsp">
-		<put-attribute name="header" value="/WEB-INF/main/header.jsp"/>
-		<put-attribute name="mypage_menu" value="/WEB-INF/mypage/mypage_menu.jsp"/>
-		<put-attribute name="mypage_home" value="/WEB-INF/mypage/mypage_home.jsp"/>
-		<put-attribute name="footer" value="/WEB-INF/main/footer.jsp"/>
-	</definition>
-	<definition name="mypage/*" extends="mypage">
-		<put-attribute name="mypage_home" value="/WEB-INF/mypage/{1}.jsp"/>
-	</definition>
-	-->
+
 </tiles-definitions>
