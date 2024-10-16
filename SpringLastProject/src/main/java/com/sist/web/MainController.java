@@ -76,6 +76,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 //jsp 연동
 import java.util.*;
 import com.sist.vo.*;
+import com.sist.manager.NaverNewsManager;
 import com.sist.service.*;
 @Controller
 public class MainController {
@@ -84,9 +85,17 @@ public class MainController {
 	private RecipeService rService;
 	@Autowired
 	private FoodService fService;
+	@Autowired
+	private NaverNewsManager mgr;
+	
 	// 사용자 요청에 따라 처리
 	@GetMapping("main/main.do")
-	public String main_main(Model model) {
+	public String main_main(String fd, Model model) {
+		if(fd==null) {
+			fd="맛집";
+		}
+		List<NewsVO> nList=mgr.newsFind(fd);
+		
 		RecipeVO rvo=rService.recipeMaxHitData();
 		List<RecipeVO> rList=rService.recipeHitTop8();
 		List<FoodVO> fList=fService.foodHitTop5();
@@ -95,6 +104,7 @@ public class MainController {
 		model.addAttribute("cvo", cvo);
 		model.addAttribute("rList", rList);
 		model.addAttribute("fList", fList);
+		model.addAttribute("nList", nList);
 		return "main";
 	}
 	

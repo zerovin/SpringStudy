@@ -9,14 +9,8 @@
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
 <script type="text/javascript">
 let websocket
-let name
 //서버연결
 function connection(){
-	name=$('#name').val()
-	if(name.trim()===""){
-		$('name').focus()
-		return
-	}
 	websocket=new WebSocket("ws://localhost:8080/web/site/chat/chat-ws")
 	websocket.onopen=onOpen
 	websocket.onclose=onClose
@@ -25,24 +19,58 @@ function connection(){
 //CallBack 함수 처리 => 자동 호출
 //연결 된 경우
 function onOpen(event){
-	alert("채팅서버에 연결되었습니다")	
+	alert("채팅서버와 연결되었습니다")	
 }
 //연결 해제
 function onClose(event){
-	alert("채팅서버가 연결을 종료하였습니다")	
+	alert("채팅서버와 연결이 해제되었습니다")	
 }
 //메세지 정상 전송
 function onMessage(event){
-	//서버에서 메세지를 받은 경우		
+	//서버에서 메세지를 받은 경우	
+	let data=event.data //서버에서 보낸 데이터
+	if(data.substring(0,4)==='msg:'){
+		$('#recvMsg').append("<font color=red>"+data.substring(4)+"</font><br>")
+	}else if(data.substring(0,3)==='my:'){
+		$('#recvMsg').append("<font color=blue>"+data.substring(3)+"</font><br>")
+	}else if(data.substring(0,4)==='you:'){
+		$('#recvMsg').append(data.substring(4)+"<br>")	
+	}
+	
+	//스크롤위치 지정
+	let ch=$('#chatArea').height()
+	let m=$('#recvMsg').height()-ch
+	$('#chatArea').scrollTop(m)
 }
-function appendMessage(msg){
-	//div출력 => 스크롤바 조절	
+function disConnection(){
+	websocket.close()	
 }
 function send(){
 	//서버로 데이터 전송
+	let msg=$('#sendMsg').val()
+	if(msg.trim()===""){
+		$('#sendMsg').focus()
+		return
+	}
+	websocket.send(msg)
+	$('#sendMsg').val("")
+	$('#sendMsg').focus()
 }
 $(function(){
-	
+	$('#inputBtn').click(function(){
+		connection()
+	})
+	$('#outputBtn').click(function(){
+		disConnection()
+	})
+	$('#sendBtn').click(function(){
+		send()
+	})
+	$('#sendMsg').keydown(function(key){
+		if(key.keyCode===13){ //enter
+			send()
+		}
+	})
 })
 </script>
 <style type="text/css">
@@ -83,9 +111,8 @@ $(function(){
                     	<table class="table">
                     		<tr>
                     			<td>
-                    				<input type="text" class="input-sm" id="name" size="20">
-                    				<input type="button" class="btn-sm btn-success" value="입장">
-                    				<input type="button" class="btn-sm btn-info" value="퇴장">
+                    				<input type="button" class="btn-sm btn-success" id="inputBtn" value="입장">
+                    				<input type="button" class="btn-sm btn-info" id="outputBtn" value="퇴장">
                     			</td>
                     		</tr>
                     		<tr>
@@ -98,7 +125,7 @@ $(function(){
                     		<tr>
                     			<td>
                     				<input type="text" id="sendMsg" class="input-sm" size="70">
-                    				<input type="button" value="전송" class="btn btn-sm btn-primary">
+                    				<input type="button" id="sendBtn" value="전송" class="btn btn-sm btn-primary">
                     			</td>
                     		</tr>
                     	</table>
