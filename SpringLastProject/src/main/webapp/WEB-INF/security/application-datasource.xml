@@ -33,6 +33,7 @@
 	<bean id="ssf" 
 		class="org.mybatis.spring.SqlSessionFactoryBean"
 		p:dataSource-ref="ds"
+		p:configLocation="/WEB-INF/config/config.xml"
     />
 	<!-- MyBatis 로그 -->
 	<!-- Mapper 구현 -->
